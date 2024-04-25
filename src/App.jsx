@@ -1,4 +1,4 @@
-import MapLayer from "./components/map-view/mapLayer";
+import MapLayer from "./components/map-view/MapLayer";
 
 function App() {
   return (
