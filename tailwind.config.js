@@ -5,12 +5,7 @@ export default {
   theme: {
     extend: {
       backgroundColor: {
-        button: "#FFEDD5",
-      },
-      inset: {
-        30: "120px",
-        40: "160px",
-        50: "200px",
+        button: "#262D27",
       },
     },
   },
