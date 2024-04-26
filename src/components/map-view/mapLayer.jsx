@@ -40,8 +40,8 @@ import {
   ZoomIn,
 } from "lucide-react";
 
-import { lineStyle, markerStyle } from "./Style";
-import { formatLength } from "./formatLength";
+import { lineStyle, markerStyle } from "./data/StyleData";
+import { formatLength } from "./utils/formatLength";
 import { Button } from "../button/Button";
 
 // const useMap = () => {}; logic yang dipisah bukan comp
