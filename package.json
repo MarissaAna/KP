@@ -11,9 +11,13 @@
   },
   "dependencies": {
     "lucide-react": "^0.363.0",
+    "modern-screenshot": "^4.4.39",
     "ol": "^9.0.0",
     "react": "^18.2.0",
-    "react-dom": "^18.2.0"
+    "react-dom": "^18.2.0",
+    "react-icons": "^5.2.1",
+    "react-tabs": "^6.0.2",
+    "tailwind-merge": "^2.3.0"
   },
   "devDependencies": {
     "@types/react": "^18.2.66",

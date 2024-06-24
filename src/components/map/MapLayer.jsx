@@ -31,6 +31,9 @@ import { ZoomFeature } from "../zoom/useZoomFeature";
 import { Button } from "./utils/button/Button";
 import { DrawFeature } from "../draw/useDrawFeature";
 import { useContext } from "react";
+import ScreenshotSection from "../common-tools/component/screenshot/ScreenshotSection";
+import TimerSection from "../common-tools/component/timer/TimerSection";
+import Container from "../common-tools/common/components/Container";
 
 const MapLayer = () => {
   const { mapRef, mapInstanceRef, editorStatus, setEditorStatus } =
@@ -41,43 +44,56 @@ const MapLayer = () => {
   const { toggleDrawInteraction, measureTooltipElementRef } = DrawFeature();
 
   return (
-    <div className="relative w-screen h-screen">
-      <div className="w-full h-screen" ref={mapRef}>
+    <div
+      className="relative w-screen h-screen"
+      onDragStart={(e) => e.preventDefault()}
+    >
+      <div className="w-full h-screen " ref={mapRef}>
         <div
           ref={measureTooltipElementRef}
           className="text-orange-500 bg-white/80 rounded-md px-1 font-bold ol-tooltip ol-tooltip-measure text-xs"
         />
-        <div className="absolute z-10 gap-2 m-4">
-          <Button onClick={() => handleZoom(mapInstanceRef, +2)}>
-            <ZoomIn />
-          </Button>
-          <Button onClick={() => handleZoom(mapInstanceRef, -2)}>
-            <ZoomOut />
-          </Button>
-          <Button
-            onClick={() => {
-              setEditorStatus("Point");
-              toggleDrawInteraction("Point");
-            }}
-          >
-            {editorStatus === "Point" ? <CircleStop /> : <CircleDot />}
-          </Button>
-          <Button
-            onClick={() => {
-              setEditorStatus("LineString");
-              toggleDrawInteraction("LineString");
-            }}
-          >
-            {editorStatus === "LineString" ? <CircleStop /> : <Spline />}
-          </Button>
-          <Button
-            onClick={() => {
-              setEditorStatus("Polygon");
-              toggleDrawInteraction("Polygon");
-            }}
-          >
-            {editorStatus === "Polygon" ? <CircleStop /> : <Hexagon />}
-          </Button>
+        <div className="absolute z-10 gap-2 m-8">
+          <div className="mb-4">
+            <Button onClick={() => handleZoom(mapInstanceRef, +2)}>
+              <ZoomIn />
+            </Button>
+            <Button onClick={() => handleZoom(mapInstanceRef, -2)}>
+              <ZoomOut />
+            </Button>
+          </div>
+
+          <div className="mb-4">
+            <Button
+              onClick={() => {
+                setEditorStatus("Point");
+                toggleDrawInteraction("Point");
+              }}
+            >
+              {editorStatus === "Point" ? <CircleStop /> : <CircleDot />}
+            </Button>
+            <Button
+              onClick={() => {
+                setEditorStatus("LineString");
+                toggleDrawInteraction("LineString");
+              }}
+            >
+              {editorStatus === "LineString" ? <CircleStop /> : <Spline />}
+            </Button>
+            <Button
+              onClick={() => {
+                setEditorStatus("Polygon");
+                toggleDrawInteraction("Polygon");
+              }}
+            >
+              {editorStatus === "Polygon" ? <CircleStop /> : <Hexagon />}
+            </Button>
+          </div>
+
+          <div>
+            <ScreenshotSection />
+            <TimerSection />
+          </div>
         </div>
       </div>
     </div>
