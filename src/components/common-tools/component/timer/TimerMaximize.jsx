@@ -15,6 +15,7 @@ const TimerMaximize = ({ onClose, show, minimizeTimer }) => {
   } = useTimerContext();
   return (
     <MoveableModal
+      id="timer-modal"
       title={<p className="py-[1px] px-[3px]">Timer</p>}
       icon={<TimerIcon />}
       onClose={onClose}

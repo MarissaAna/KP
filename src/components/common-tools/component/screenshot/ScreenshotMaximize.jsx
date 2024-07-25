@@ -23,12 +23,16 @@ const ScreenshotMaximize = ({ onClose, show, minimizeScreenshot }) => {
   return (
     <MoveableModal
       title={
-        <div className="flex w-full items-center justify-between ">
+        <div className="flex w-full items-center justify-between">
           <h1>Screenshot Tool</h1>
         </div>
       }
       action={
-        <button className="w-6 h-6" onClick={minimizeScreenshot}>
+        <button
+          data-testid="minimize-button"
+          className="w-6 h-6"
+          onClick={minimizeScreenshot}
+        >
           <FaWindowMinimize />
         </button>
       }

@@ -83,9 +83,7 @@ const ScreenshotBrowse = ({ savedScreenshots, onDelete, onUpdate }) => {
 
         <div
           className="bg-[#1D2420] max-h-[167px] text-sm rounded-lg
-           overflow-y-auto"
-          //  scrollbar-thumb-rounded-full scrollbar-track-rounded-full scrollbar scrollbar-thumb-white scrollbar-track-[#6E6F6E]"
-          // scrollbar-thin scrollbar-webkit"
+           overflow-y-auto scrollbar-thumb-rounded-full scrollbar-track-rounded-full scrollbar scrollbar-thumb-white scrollbar-track-[#6E6F6E]"
         >
           <ul className="bg-[#1D2420] m-1">
             {filteredScreenshots.map((item, index) => (

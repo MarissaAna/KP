@@ -24,6 +24,7 @@ import {
   Hexagon,
   ZoomOut,
   ZoomIn,
+  Palette,
 } from "lucide-react";
 
 import { MapContext } from "./hooks/useMap";
@@ -34,6 +35,9 @@ import { useContext } from "react";
 import ScreenshotSection from "../common-tools/component/screenshot/ScreenshotSection";
 import TimerSection from "../common-tools/component/timer/TimerSection";
 import Container from "../common-tools/common/components/Container";
+import StopwatchSection from "../common-tools/component/stopwatch/StopwatchSection";
+import CalculatorSection from "../common-tools/component/calculator/CalculatorSection";
+import Toggle from "../common-tools/common/components/Toggle";
 
 const MapLayer = () => {
   const { mapRef, mapInstanceRef, editorStatus, setEditorStatus } =
@@ -90,8 +94,18 @@ const MapLayer = () => {
             </Button>
           </div>
 
+          <div className="mb-4">
+            <Button>
+              <Palette />
+            </Button>
+
+            <Toggle />
+          </div>
+
           <div>
+            <CalculatorSection />
             <ScreenshotSection />
+            <StopwatchSection />
             <TimerSection />
           </div>
         </div>

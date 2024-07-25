@@ -1,43 +1,63 @@
+/*
+ * Copyright Intern MSIB6 @ PT Len Industri (Persero)
+ *
+ * THIS SOFTWARE SOURCE CODE AND ANY EXECUTABLE DERIVED THEREOF ARE PROPRIETARY
+ * TO PT LEN INDUSTRI (PERSERO), AS APPLICABLE, AND SHALL NOT BE USED IN ANY WAY
+ * OTHER THAN BEFOREHAND AGREED ON BY PT LEN INDUSTRI (PERSERO), NOR BE REPRODUCED
+ * OR DISCLOSED TO THIRD PARTIES WITHOUT PRIOR WRITTEN AUTHORIZATION BY
+ * PT LEN INDUSTRI (PERSERO), AS APPLICABLE.
+ *
+ * Created Date: Saturday, June 12th 2024, 09:00:00 am
+ * Author: Annisa Nailiya Zahroh | annisanailiyazahroh02@gmail.com <https://github.com/annisanailiya>
+ *
+ */
+
 import { FaAngleDown } from "react-icons/fa";
 import BackToTab from "../../common/components/BackToTabIcon";
 import MoveableModal from "../../common/components/MoveableModal";
 import TimerIcon from "../../common/components/TimerIcon";
 import { cn } from "../../utils/cn";
 import PlayIcon from "../../common/components/PlayIcon";
-import ReplayIcon from "../../common/components/ReplayIcon";
+import ResetIcon from "../../common/components/ResetIcon";
 import { formatToTwoDigits } from "./utils/formatter";
-import useTimer from "./hooks/useTimer";
-import { useTimerContext } from "./context/TimerContext";
+import useStopwatch from "./hooks/useStopwatch";
+import { useStopwatchContext } from "./context/StopwatchContext";
 import PauseIcon from "../../common/components/PauseIcon";
 
-const TimerMinimizeContent = ({
+const StopwatchMinimizeContent = ({
   idx,
   show,
   onClickNext,
   onClickPrev,
   title,
   setTitle,
-  description,
-  setDescription,
+  totalTime,
+  onActiveStopwatch,
+  onInactiveStopwatch,
 }) => {
   const {
-    stopTimer,
-    resetTimer,
-    changeInputTime,
-    isTimerOn,
-    isTimerOff,
+    stopStopwatch,
+    resetStopwatch,
+    isStopwatchOn,
+    isStopwatchOff,
     seconds,
     minutes,
     hours,
-    playOrResume,
-  } = useTimer({
+    playStopwatch,
+    isPlaying,
+  } = useStopwatch({
     idx,
+    onActiveStopwatch,
+    onInactiveStopwatch,
+    totalTime,
+    setTotalTime: (newTime) => (totalTime[idx] = newTime),
   });
+
   return (
     <div
-      data-testid="timer-minimize"
+      data-testid="stopwatch-minimize"
       className={cn(
-        "p-3 pb-2 w-40 flex flex-col gap-3 items-center text-white",
+        "p-3 flex flex-col justify-center gap-3 items-center text-white",
         {
           "hidden invisible opacity-0 pointer-events-none": !show,
         }
@@ -45,52 +65,50 @@ const TimerMinimizeContent = ({
     >
       <input
         maxLength={20}
-        value={title || `Timer ${idx + 1}`}
+        value={title || `Stopwatch ${idx + 1}`}
         onChange={(e) => setTitle(e.target.value)}
-        className="bg-transparent w-32 truncate focus:outline-active focus:outline-4 font-bold leading-5 text-center"
+        className="bg-transparent w-32 truncate font-bold leading-5 text-center focus:outline-active focus:outline-4"
         onFocus={(e) => e.target.select()}
+        disabled={isPlaying}
       />
       <div className="flex items-center gap-[10px]">
         <button onClick={onClickPrev}>
-          <FaAngleDown className="rotate-90 w-6 h-6" />
+          <FaAngleDown className="rotate-90 w-70 h-6" />
         </button>
 
         <div className="flex-none w-[88px] h-[88px] rounded-full border flex items-center justify-center">
           <fieldset
-            disabled={!isTimerOff}
+            disabled
             className={cn(
-              "flex items-center justify-center rounded-lg text-xs font-medium p-1 w-[88px]",
+              "flex items-center justify-center rounded-lg text-xs font-medium py-1 w-[88px] text-gray",
               {
-                "text-neutral-2": isTimerOn,
+                "text-neutral-2": isStopwatchOn,
               }
             )}
           >
             <input
+              readOnly
               className="w-[2ch] bg-transparent focus:outline-none"
               type="text"
               name="hours"
               value={formatToTwoDigits(hours)}
-              onChange={(e) => changeInputTime(e, "hours")}
-              onFocus={(e) => e.target.select()}
             />
             :
             <input
+              readOnly
               className="w-[2ch] bg-transparent focus:outline-none "
               type="text"
               name="minutes"
               value={formatToTwoDigits(minutes)}
-              onChange={(e) => changeInputTime(e, "minutes")}
-              onFocus={(e) => e.target.select()}
             />
             :
             <input
+              readOnly
               className="w-[2ch] bg-transparent focus:outline-none"
               type="text"
               name="seconds"
               value={formatToTwoDigits(seconds)}
-              onChange={(e) => changeInputTime(e, "seconds")}
-              onFocus={(e) => e.target.select()}
-            />{" "}
+            />
           </fieldset>
         </div>
 
@@ -102,87 +120,71 @@ const TimerMinimizeContent = ({
       <div className="flex gap-2 justify-center">
         <button
           onClick={() => {
-            if (isTimerOff) {
-              playOrResume();
-              return;
-            }
-            if (isTimerOn) {
-              stopTimer();
-              return;
+            if (isStopwatchOff) {
+              playStopwatch();
+            } else if (isStopwatchOn) {
+              stopStopwatch();
             }
           }}
           className={cn(
             "w-6 h-6 rounded-lg flex items-center justify-center bg-btn-primary"
           )}
         >
-          {isTimerOff ? <PlayIcon /> : <PauseIcon />}
+          {isStopwatchOff ? <PlayIcon /> : <PauseIcon />}
         </button>
 
         <button
-          onClick={resetTimer}
+          disabled={totalTime === 0}
+          onClick={resetStopwatch}
           className="bg-neutral-3 w-6 h-6 rounded-lg flex items-center justify-center"
         >
-          <ReplayIcon />
+          <ResetIcon />
         </button>
       </div>
-
-      <input
-        value={description || "Input Text to Show"}
-        onChange={(e) => setDescription(e.target.value)}
-        disabled={!isTimerOff}
-        maxLength={50}
-        onFocus={(e) => {
-          e.currentTarget.select();
-        }}
-        className="text-[10px] text-center bg-transparent truncate focus:outline-active focus:outline-4"
-      />
     </div>
   );
 };
 
-const TimerMinimize = ({ onClose, show, maximizeTimer }) => {
+const StopwatchMinimize = ({ onClose, show, maximizeStopwatch }) => {
   const {
-    countDownDates,
-    activeTimerId,
+    totalTimes,
+    activeStopwatchId,
     onClickNext,
     onClickPrev,
     getTitle,
     setTitle,
-    getDescription,
-    setDescription,
-  } = useTimerContext();
+  } = useStopwatchContext();
 
   return (
     <MoveableModal
-      id="timer-modal"
+      id="stopwatch-modal"
       title={
-        <div className="scale-x-1">
-          <button onClick={maximizeTimer}>
+        <div className="scale-x-[-1] h-[24px]">
+          <button onClick={maximizeStopwatch}>
             <BackToTab />
           </button>
         </div>
       }
-      name={`Timer`}
+      name={`Stopwatch`}
       icon={<TimerIcon />}
       onClose={onClose}
       show={show}
-      className="w-[184px]"
+      className="w-[200px]"
     >
-      {countDownDates.map((_, i) => (
-        <TimerMinimizeContent
+      {totalTimes.map((totalTime, i) => (
+        <StopwatchMinimizeContent
           key={i}
           idx={i}
           onClickNext={onClickNext}
           onClickPrev={onClickPrev}
-          show={i === activeTimerId}
+          show={i === activeStopwatchId}
           title={getTitle(i)}
           setTitle={(newVal) => setTitle(i, newVal)}
-          description={getDescription(i)}
-          setDescription={(newVal) => setDescription(i, newVal)}
+          totalTime={totalTime}
         />
       ))}
     </MoveableModal>
   );
 };
 
-export default TimerMinimize;
+export default StopwatchMinimize;

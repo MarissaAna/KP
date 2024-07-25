@@ -25,7 +25,6 @@ import {
 } from "react-icons/md";
 import { ScreenshotContext } from "./context/ScreenshotContext";
 import { TbSquarePlus2 } from "react-icons/tb";
-import ScreenshotPortal from "./ScreenshotPortal";
 
 /**
  * ScreenshotCapture component for capturing screenshots of entire screen, window, or specific area.
@@ -40,8 +39,6 @@ const ScreenshotCapture = ({
   onClose,
 }) => {
   const { activeMode, handleActiveMode } = useContext(ScreenshotContext);
-
-  const [showTestWindow, setShowTestWindow] = useState(false);
   const { showFlash } = useFlash();
 
   /**
@@ -51,16 +48,17 @@ const ScreenshotCapture = ({
   const handleTabClick = async (index) => {
     handleActiveMode(index);
     if (index === 1) {
-      setShowTestWindow(true);
+      onClose();
       await takeScreenshot(
         index,
         {
-          leftWindowId: "leftWindow",
-          rightWindowId: "rightWindow",
+          timerId: "timer-modal",
+          calculatorId: "calculator-modal",
+          stopwatchId: "stopwatch-modal",
         },
         () => {
           showFlash();
-          setShowTestWindow(false);
+          onClose();
         }
       );
     } else {
@@ -134,9 +132,6 @@ const ScreenshotCapture = ({
           onSave={(item) => saveScreenshot(item, 2)}
         />
       ) : null}
-
-      {/* FOR TESTING PURPOSE*/}
-      {ScreenshotPortal(showTestWindow)}
     </>
   );
 };

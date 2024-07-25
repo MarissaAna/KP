@@ -73,7 +73,7 @@ const ScreenshotImage = ({ src, alt }) => {
       </div>
 
       <div className="absolute top-3 right-3">
-        <div className="flex flex-col p-0.5 justify-center items-center bg-btn-secondary/50 rounded-xl backdrop-blur-lg">
+        <div className="flex flex-col p-0.5 justify-center items-center bg-btn-secondary/50 rounded-xl backdrop-blur-lg text-white">
           <button className="p-1" onClick={zoomIn}>
             <AiOutlinePlusCircle className="w-5 h-5" />
           </button>

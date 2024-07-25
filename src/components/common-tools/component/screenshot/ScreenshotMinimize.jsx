@@ -13,7 +13,7 @@
  *
  */
 
-import React, { useContext, useState } from "react";
+import React, { useContext } from "react";
 import {
   MdOutlineScreenshotMonitor,
   MdOutlineTabUnselected,
@@ -23,7 +23,6 @@ import MoveableModal from "../../common/components/MoveableModal";
 import { FaRegWindowMaximize } from "react-icons/fa";
 import { ScreenshotContext } from "./context/ScreenshotContext";
 import useFlash from "../../hooks/useFlash";
-import ScreenshotPortal from "./ScreenshotPortal";
 
 const ScreenshotMinimizeItem = ({
   takeScreenshot,
@@ -31,7 +30,6 @@ const ScreenshotMinimizeItem = ({
   onClose,
   setActiveTab,
 }) => {
-  const [showTestWindow, setShowTestWindow] = useState(false);
   const { showFlash } = useFlash();
 
   /**
@@ -40,15 +38,14 @@ const ScreenshotMinimizeItem = ({
    */
   const handleTabClick = async (index) => {
     if (index === 1) {
-      setShowTestWindow(true);
       await takeScreenshot(
         index,
         {
-          leftWindowId: "leftWindow",
-          rightWindowId: "rightWindow",
+          timerId: "timer-modal",
+          stopwatchId: "stopwatch-modal",
+          calculatorId: "calculator-modal",
         },
         () => {
-          setShowTestWindow(false);
           showFlash();
           setActiveTab(index);
           maximizeScreenshot();
@@ -72,13 +69,15 @@ const ScreenshotMinimizeItem = ({
     >
       <div className="bg-[#242A26] px-2 py-1 rounded-xl">
         <button
-          className="hover:bg-btn-secondary p-2 rounded-md"
+          data-testid="fullscreen-btn"
+          className="hover:bg-btn-secondary p-2 rounded-md "
           onClick={() => handleTabClick(0)}
           title="Screenshot Fullscreen"
         >
           <MdOutlineScreenshotMonitor size={24} />
         </button>
         <button
+          data-testid="window-btn"
           className="hover:bg-btn-secondary p-2 rounded-md"
           onClick={() => handleTabClick(1)}
           title="Screenshot Window"
@@ -86,6 +85,7 @@ const ScreenshotMinimizeItem = ({
           <TbSquarePlus2 size={24} />
         </button>
         <button
+          data-testid="area-btn"
           className="hover:bg-btn-secondary p-2 rounded-md"
           onClick={() => handleTabClick(2)}
           title="Screenshot Area"
@@ -93,9 +93,6 @@ const ScreenshotMinimizeItem = ({
           <MdOutlineTabUnselected size={24} />
         </button>
       </div>
-
-      {/* FOR TESTING PURPOSE*/}
-      {ScreenshotPortal(showTestWindow)}
     </div>
   );
 };
@@ -105,6 +102,7 @@ const ScreenshotMinimize = ({ onClose, show, maximizeScreenshot }) => {
 
   return (
     <MoveableModal
+      data-testid="screenshot-modal"
       className="bg-bg3-100 p-0"
       title={
         <ScreenshotMinimizeItem
@@ -116,11 +114,12 @@ const ScreenshotMinimize = ({ onClose, show, maximizeScreenshot }) => {
       }
       action={
         <button
+          data-testid="maximize-button"
           className="p-2 hover:bg-bg1-100 rounded-md"
           onClick={maximizeScreenshot}
           title="Maximize"
         >
-          <FaRegWindowMaximize size={22} className="text-white" />
+          <FaRegWindowMaximize size={22} />
         </button>
       }
       onClose={onClose}

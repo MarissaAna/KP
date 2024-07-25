@@ -15,6 +15,7 @@
 
 import { domToBlob } from "modern-screenshot";
 import { blobToBase64 } from "../utils/blobToBase64";
+import { setupModalHover, setPosition } from "../utils/modalStyle";
 
 const createParentDiv = () => {
   const parentDivElement = document.createElement("div");
@@ -22,7 +23,7 @@ const createParentDiv = () => {
   parentDivElement.style.inset = "0";
   parentDivElement.style.width = "100vw";
   parentDivElement.style.height = "100%";
-  parentDivElement.style.zIndex = 21;
+  parentDivElement.style.zIndex = 0;
   parentDivElement.style.background = "black";
   parentDivElement.style.opacity = 0.5;
 
@@ -35,6 +36,7 @@ const takeWindowScreenshot = async (target) => {
    * @type {Blob}
    */
   const blobResult = await domToBlob(target);
+  console.log(blobResult, target);
 
   /**
    * Data Blob representing the cropped screenshot.
@@ -79,40 +81,72 @@ const takeWindowScreenshot = async (target) => {
 };
 
 const useScreenshotWindow = () => {
-  const tempWindowScreenshot = (leftId, rightId) => {
+  const tempWindowScreenshot = (timerId, calculatorId, stopwatchId) => {
     return new Promise((res) => {
       // Style element
       const body = document.body;
+      body.classList.add("blur-sm");
       const parent = createParentDiv();
       body.appendChild(parent);
 
-      const leftWindow = document.getElementById(leftId);
-      const doneScreenshot = (result) => {
+      const timerWindow = document.getElementById(timerId);
+      const calculatorWindow = document.getElementById(calculatorId);
+      const stopwatchWindow = document.getElementById(stopwatchId);
+
+      let restoreTimerPosition,
+        restoreCalculatorPosition,
+        restoreStopwatchPosition;
+
+      const doneScreenshot = (result, restoreFunc) => {
+        cleanupModalHover();
+
         res(result);
 
-        document.body.removeEventListener("click", onClickLeft);
-        document.body.removeEventListener("click", onClickRight);
+        document.body.removeEventListener("click", onClickTimer);
+        document.body.removeEventListener("click", onClickCalculator);
+        document.body.removeEventListener("click", onClickStopwatch);
+
+        restoreFunc();
         body.removeChild(parent);
       };
 
-      const onClickLeft = async function (event) {
-        if (leftWindow.contains(event.target)) {
-          // Process image
-          const result = await takeWindowScreenshot(leftWindow);
-          doneScreenshot(result);
+      const onClickTimer = async function (event) {
+        if (timerWindow.contains(event.target)) {
+          const { restorePosition } = setPosition(timerWindow);
+          restoreTimerPosition = restorePosition;
+          const result = await takeWindowScreenshot(timerWindow);
+          doneScreenshot(result, restoreTimerPosition);
         }
       };
 
-      const rightWindow = document.getElementById(rightId);
-      const onClickRight = async function (event) {
-        if (rightWindow.contains(event.target)) {
-          const result = await takeWindowScreenshot(rightWindow);
-          doneScreenshot(result);
+      const onClickCalculator = async function (event) {
+        if (calculatorWindow.contains(event.target)) {
+          const { restorePosition } = setPosition(calculatorWindow);
+          restoreCalculatorPosition = restorePosition;
+          const result = await takeWindowScreenshot(calculatorWindow);
+          doneScreenshot(result, restoreCalculatorPosition);
         }
       };
 
-      document.body.addEventListener("click", onClickLeft);
-      document.body.addEventListener("click", onClickRight);
+      const onClickStopwatch = async function (event) {
+        if (stopwatchWindow.contains(event.target)) {
+          const { restorePosition } = setPosition(stopwatchWindow);
+          restoreStopwatchPosition = restorePosition;
+          const result = await takeWindowScreenshot(stopwatchWindow);
+          doneScreenshot(result, restoreStopwatchPosition);
+        }
+      };
+
+      document.body.addEventListener("click", onClickTimer);
+      document.body.addEventListener("click", onClickCalculator);
+      document.body.addEventListener("click", onClickStopwatch);
+
+      const cleanupModalHover = setupModalHover(
+        timerWindow,
+        calculatorWindow,
+        stopwatchWindow,
+        body
+      );
     });
   };
 

@@ -31,7 +31,7 @@ import useScreenshotWindow from "../window-screenshot/useScreenshotWindow";
  */
 export const ScreenshotContext = createContext();
 const ScreenshotProvider = ({ children }) => {
-  const [activeMode, setActiveMode] = useState(0);
+  const [activeMode, setActiveMode] = useState(null);
   const [screenshotResults, setScreenshotResults] = useState([
     null,
     null,
@@ -74,13 +74,16 @@ const ScreenshotProvider = ({ children }) => {
           break;
         case 1:
           // Entire Window
-          const { leftWindowId, rightWindowId } = windowId;
-          result = await tempWindowScreenshot(leftWindowId, rightWindowId).then(
-            (res) => {
-              callback();
-              return res;
-            }
-          );
+          const { timerId, calculatorId, stopwatchId } = windowId;
+          // console.log("t", timerId);
+          result = await tempWindowScreenshot(
+            timerId,
+            calculatorId,
+            stopwatchId
+          ).then((res) => {
+            callback();
+            return res;
+          });
           break;
         case 2:
           // Area Screenshot
@@ -141,6 +144,10 @@ const ScreenshotProvider = ({ children }) => {
   const saveScreenshot = (item, activeTab) => {
     resetScreenshot(activeTab);
     setSavedScreenshots((prev) => {
+      if (prev.some((savedItem) => savedItem.url === item.url)) {
+        return prev;
+      }
+
       const updatedScreenshots = [...prev, item];
       localStorage.setItem(
         "screenshot-memory",

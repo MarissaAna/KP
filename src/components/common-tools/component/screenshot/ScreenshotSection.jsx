@@ -17,7 +17,6 @@ import { RiScreenshot2Fill } from "react-icons/ri";
 
 import ScreenshotModal from "./ScreenshotModal";
 import { Button } from "../../../map/utils/button/Button";
-// import Button from "../../common/components/Button";
 import ScreenshotProvider from "./context/ScreenshotContext";
 
 /**

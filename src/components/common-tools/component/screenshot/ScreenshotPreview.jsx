@@ -14,7 +14,7 @@
  *
  */
 
-import { useRef, useState } from "react";
+import { useContext, useRef, useState } from "react";
 import { flushSync } from "react-dom";
 
 import Button from "../../common/components/Button";
@@ -22,6 +22,7 @@ import useToast from "../timer/hooks/useToast";
 import Toast from "../timer/Toast";
 import { ToastContextProvider } from "../timer/context/ToastContext";
 import ScreenshotImage from "./ScreenshotImage";
+import { ScreenshotContext } from "./context/ScreenshotContext";
 
 /**
  * ScreenshotPreview component for displaying a preview of a screenshot with editing and saving options.
@@ -41,6 +42,7 @@ const ScreenshotPreview = ({ result, onReset, onSave }) => {
   const [isEditing, setIsEditing] = useState(false);
   const [showSaveModal, setSaveModal] = useState(false);
   const [isFocused, setIsFocused] = useState(false);
+  const { activeMode, handleActiveMode } = useContext(ScreenshotContext);
 
   /**
    * Reference to the input element for filename editing.
@@ -50,13 +52,16 @@ const ScreenshotPreview = ({ result, onReset, onSave }) => {
 
   return (
     <>
-      <div className="w-full h-[280px] bg-accent-3 rounded-xl overflow-hidden my-4">
+      <div
+        data-testid="screenshot-preview"
+        className="w-full h-[280px] bg-accent-3 rounded-xl overflow-hidden my-4"
+      >
         <ScreenshotImage src={result.img} alt={result.url} />
       </div>
 
       <div className="grid grid-cols-2">
         <div className="text-white/50">{result.time} WIB</div>
-        <div className="text-right">{result.date}</div>
+        <div className="text-white text-right">{result.date}</div>
       </div>
 
       <div
@@ -69,7 +74,7 @@ const ScreenshotPreview = ({ result, onReset, onSave }) => {
           type="text"
           defaultValue={result.filename}
           maxLength={50}
-          className="flex-1 h-min bg-transparent focus:outline-none text-sm "
+          className="flex-1 h-min bg-transparent focus:outline-none text-sm"
           onBlur={() => {
             setIsEditing(false);
             setIsFocused(false);
@@ -93,6 +98,7 @@ const ScreenshotPreview = ({ result, onReset, onSave }) => {
         </Button>
 
         <Button
+          data-testid="screenshot-save-button"
           className="bg-[#4F9669] hover:bg-[#81AC91] transition-all duration-200 hover:delay-75 text-base font-semibold w-[190px]"
           onClick={() => {
             setSaveModal(true);
